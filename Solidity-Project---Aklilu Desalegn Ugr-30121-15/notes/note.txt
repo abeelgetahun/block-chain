@@ -1,0 +1,2 @@
+First note
+It should be noted in this video Dan said that the amount of gas is static to the opcodes used. What he meant is that the amount of gas is deterministically calculated based on the opcodes used. For simple opcodes, like ADD or MUL the gas amount is a fixed amount. For more complicated opcodes, like SSTORE, there are several factors that go into the gas calculation and there are even gas refunds for clearing of a storage slot (see evm codes for more details)
