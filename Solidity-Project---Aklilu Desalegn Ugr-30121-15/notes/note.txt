@@ -1,2 +1,56 @@
 First note
-It should be noted in this video Dan said that the amount of gas is static to the opcodes used. What he meant is that the amount of gas is deterministically calculated based on the opcodes used. For simple opcodes, like ADD or MUL the gas amount is a fixed amount. For more complicated opcodes, like SSTORE, there are several factors that go into the gas calculation and there are even gas refunds for clearing of a storage slot (see evm codes for more details)
+It should be noted in this video Dan said that the 
+amount of gas is static to the opcodes used. What he 
+meant is that the amount of gas is deterministically 
+calculated based on the opcodes used. For simple 
+opcodes, like ADD or MUL the gas amount is a fixed 
+amount. For more complicated opcodes, like SSTORE, 
+there are several factors that go into the gas 
+calculation and there are even gas refunds for
+ clearing of a storage slot (see evm codes for more
+  details).
+
+  Second Note 
+  Basic Solidity Data Types
+In this tutorial we'll learn basic Solidity data types!
+
+We'll use state variables to store them in the contract's 
+persistent data storage:
+
+contract Contract {
+    bool public value = true;
+    int public a = 10;
+    string public msg = "Hello World";
+}
+We're going to have to look at each of these data 
+types in closer detail. 
+
+Since Smart Contracts deal primarily with digital 
+value, it's important to understand everything that is happening on a low level. Any mistake could have dire consequences! It's also important to do things efficiently since all storage and computation on the blockchain will cost money.
+
+With this in mind, let's dive into Basic Solidity Data 
+Types!
+
+#3rd Note
+Solidity Functions
+We've learned about how to store values inside of our smart contracts. Now it's time to learn how to read and modify those values! We accomplish this by adding functions to our contract code.
+
+Technically we already created functions in the previous lesson on data types! By setting our state variables to public, the compiler was creating a getter function under the hood:
+
+contract Contract {
+    uint public x = 3;
+}
+ We can query the value in x externally using a generated function called x().
+
+What if we wanted to modify x? 
+
+contract Contract {
+    uint public x = 3;
+
+    function changeX() external {
+        x = 5;
+    }
+}
+Cool! 
+
+That's just a taste of what's to come! Let's learn about functions.
