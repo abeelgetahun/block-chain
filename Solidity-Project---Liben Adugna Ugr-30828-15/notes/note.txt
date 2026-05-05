@@ -1,0 +1,3 @@
+Solidity coursework — Liben Adugna (Ugr/30828/15)
+
+Exercises grouped under code/ by topic (escrow, arrays, structs, mapping, voting, inheritance).
