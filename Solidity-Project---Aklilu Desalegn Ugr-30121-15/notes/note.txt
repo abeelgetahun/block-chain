@@ -154,3 +154,20 @@ mapping(address => uint) balances;
  Under the hood, the storage location is found by hashing the balances variable location with the address passed in. It's a simple lookup! Much more efficient than iteration. Generally it's better to try to use a mapping first and only use an array when you realize you need to iterate.
 
 Now that we see how mappings fit into the picture, let's learn how to build them!
+   8th Note
+   Voting Contract
+In this tutorial we're going to build a voting contract! We'll use the lessons learned here to understand how the Governor standard emerged 
+
+ Proposals
+We're going to focus on creating a voting contract that will allow members to create new proposals. This contract can contain many proposals which will be voted on by a group of members. Each proposal will keep track of its votes to decide when its time to execute.
+
+At execution time, these proposals will send calldata to a smart contract. The calldata could be anything! We could have a Voting system that allows 100 members to decide when to upgrade a protocol. The calldata might target a function with the signature upgrade(address) and send over the new protocol implementation. That would be a very cool use of your Voting contract!
+9th Note
+Contract Inheritance
+As with many object-oriented languages, Solidity includes inheritance as a feature.
+
+Inheritance means that you can create an object with some values/methods and use it as a base for other objects.
+
+In Solidity, the objects we're referring to are contracts and interfaces. We can write a contract with state variables and functions. Then we can create contracts that inherit those variables and functions. These derived contracts can then choose to add behavior as necessary.
+
+This use case may seem quite similar to libraries! Just like libraries, code re-use is a big motivation for inheritance. We'll take a look at why inheritance can be a more powerful feature than libraries. Of course, that power comes with tradeoffs! With time and practice you'll be able to understand these tradeoffs and figure out which tool is right for the particular job at hand.
