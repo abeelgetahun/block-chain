@@ -84,3 +84,73 @@ If we combine this with the function signature, our call data would look like th
 Regardless of whether its in a transaction from an EOA or a message call from one contract to another, this would be our calldata sending 15 to an approve function.
 
 Ready to start working with calldata? Let's jump in!
+
+
+5th Note
+What's an Escrow? 
+An escrow is an agreement often used when transferring funds in exchange for a good or service. Funds can be held in escrow and a third party can be chosen to "arbitrate" or approve the transfer when the service or good is provided.
+
+
+
+There are many use cases for Escrows across real estate, charities and marketplaces. It's the bread and butter of Ethereum Smart Contracts as it's quite easy to write, and yet, so powerful. 
+
+Let's Get Building 
+We hope that during this block you'll be thinking about ways that you can use an escrow to launch new decentralized applications. You'll be able to use all the code you wrote in a working web application!
+
+With a bit of creativity you can create something new and amazing. Start brainstorming!
+ 
+
+ 6th NoteStructs
+Structs provide Solidity Developers with a way to build custom data types. These data types can have multiple fields of data types we already have previously discussed.
+
+For example:
+
+struct Account {
+    uint balance;
+    bool isActive;
+}
+ This struct is composed of a uint and a bool. If this struct were defined outside of a contract, it can be shared across multiple contracts like so:
+
+struct Account {
+    uint balance
+    bool isActive;
+}
+
+contract A {
+    Account owner;
+    Account recipient;
+}
+
+contract B {
+    mapping (address => Account) accounts;
+}
+
+
+7th Note
+Mappings
+Mappings are an important data type in Solidity. With a mapping we can take values of one data type and map them to values of another data type.
+
+Let's consider an example. Say you wanted to track balances of a bunch of addresses:
+
+ADDRESS	BALANCE
+0xc783df8a850f42e7F7e57013759C285caa701eB6	500
+0xeAD9C93b79Ae7C1591b1FB5323BD777E86e150d4	100
+0xE5904695748fe4A84b40b3fc79De2277660BD1D3	20
+Based on what we have learned so far you might be thinking of creating an array of structs:
+
+struct Account {
+    address addr;
+    uint balance;
+}
+
+Account[] accounts;
+ This works, certainly. When we need to find an address balance we can iterate through the accounts to find the address we're looking for and retrieve the balance.
+
+However, there's a better way! We can use a mapping:
+
+mapping(address => uint) balances;
+ With a mapping each address is mapped to a unique place in memory where it stores the uint balance. Looking up the balance is as simple as providing the address to the mapping: balances[addr].
+
+ Under the hood, the storage location is found by hashing the balances variable location with the address passed in. It's a simple lookup! Much more efficient than iteration. Generally it's better to try to use a mapping first and only use an array when you realize you need to iterate.
+
+Now that we see how mappings fit into the picture, let's learn how to build them!
