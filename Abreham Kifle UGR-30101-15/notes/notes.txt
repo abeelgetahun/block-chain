@@ -1,0 +1,206 @@
+================================================================================
+Alchemy University - "Learn Solidity" Course Notes
+Student: Abreham Kifle (UGR/30101/15)
+================================================================================
+
+These are my personal notes taken while going through the Learn Solidity course
+on Alchemy University. The course is split into 4 chapters and I added the most
+important takeaways and a few code patterns I want to remember.
+
+--------------------------------------------------------------------------------
+Note 1 - Gas and the EVM
+--------------------------------------------------------------------------------
+Gas usage is deterministic: it is calculated from the opcodes the EVM ends up
+executing. Simple opcodes like ADD or MUL have a fixed cost. Heavier ones like
+SSTORE depend on what is in storage and can even refund gas when a slot is
+cleared (set back to zero). For exact numbers I keep https://www.evm.codes
+bookmarked.
+
+Key takeaways from the intro module:
+  1. Every transaction starts at an Externally Owned Account (EOA)
+  2. Transactions are processed sequentially within a block
+  3. Each tx must specify a gas limit
+  4. Calldata targets a specific contract method
+  5. A contract can call another contract inside the same transaction
+
+--------------------------------------------------------------------------------
+Note 2 - Basic Solidity Data Types
+--------------------------------------------------------------------------------
+State variables live in the contract's persistent storage:
+
+    contract Contract {
+        bool   public flag = true;
+        int    public a    = 10;
+        string public msg  = "Hello World";
+    }
+
+When the variable is `public`, the compiler auto-generates a getter for free.
+
+Things I want to remember:
+  - bool, int / uint (any width from 8 to 256 in steps of 8)
+  - bytes32 fits short fixed strings without paying for dynamic storage
+  - string is dynamic and lives in calldata, memory, or storage
+  - enum starts at 0; it is just a thin layer over uint8
+
+Smart contracts handle real value, so size and gas cost matter on every line.
+
+--------------------------------------------------------------------------------
+Note 3 - Functions
+--------------------------------------------------------------------------------
+We can read and write state through functions:
+
+    contract Contract {
+        uint public x = 3;
+
+        function changeX() external { x = 5; }
+    }
+
+Function visibility I use the most:
+  - external -> only callable from outside the contract (cheaper for big args)
+  - public   -> external + internal
+  - internal -> only this contract or its children
+  - private  -> only this contract
+
+State-mutability tags:
+  - view -> reads state, no writes
+  - pure -> neither reads nor writes state
+
+`return` can be a tuple, and Solidity supports function overloading by
+parameter list (see DoubleOverload solution).
+
+--------------------------------------------------------------------------------
+Note 4 - Accounts and Sending Ether
+--------------------------------------------------------------------------------
+Two account types from the user's point of view:
+  - Externally Owned Account (EOA) - owned by a private key
+  - Contract Account              - owned by code
+
+Both have an address and a balance. Contracts also store bytecode and storage.
+
+Solidity exposes the transaction context through global variables:
+  - msg.sender -> who is calling
+  - msg.value  -> wei sent with the call
+  - msg.data   -> raw calldata
+
+To accept ether a contract must declare a `receive()` or `payable` function.
+To send ether the safest pattern is the low-level call:
+
+    (bool ok, ) = recipient.call{value: amount}("");
+    require(ok, "transfer failed");
+
+`selfdestruct(addr)` removes the contract and sends the remaining balance to
+`addr`. It still works in 0.8.20 but is being deprecated, so do not lean on it
+for new contracts.
+
+--------------------------------------------------------------------------------
+Note 5 - Calldata
+--------------------------------------------------------------------------------
+Calldata is the raw payload of a transaction or message call. The first 4 bytes
+are the function selector, computed as the first 4 bytes of
+keccak256("functionName(types)").
+
+Example: for `function approve(uint val) external;`
+  - signature  = "approve(uint256)"
+  - selector   = first 4 bytes of keccak256(signature) = 0xb759f954
+  - argument 15 padded to 32 bytes:
+        000000000000000000000000000000000000000000000000000000000000000f
+  - full calldata:
+        0xb759f954000000000000000000000000000000000000000000000000000000000000000f
+
+Helpers I used in the calldata exercises:
+  - abi.encodePacked(selector)
+  - abi.encodeWithSignature("alert(uint256,bool)", enemies, armed)
+
+--------------------------------------------------------------------------------
+Note 6 - Escrow
+--------------------------------------------------------------------------------
+An escrow holds funds in trust until a third party (the arbiter) approves the
+release. It maps cleanly to real-world cases: real estate deals, marketplaces,
+charity matching, anywhere two parties do not fully trust each other.
+
+The escrow we built has three roles:
+  - depositor   -> the one funding the contract on deploy
+  - beneficiary -> who receives the funds when released
+  - arbiter     -> the only party allowed to call approve()
+
+Final version emits an `Approved(uint amount)` event so the front-end can
+listen for the release without polling.
+
+--------------------------------------------------------------------------------
+Note 7 - Structs
+--------------------------------------------------------------------------------
+Structs let me bundle related fields into a custom type:
+
+    struct Account {
+        uint balance;
+        bool isActive;
+    }
+
+If declared at file scope they can be shared between contracts. Two important
+storage location keywords when handling structs:
+  - memory  -> a temporary copy, changes do not affect storage
+  - storage -> a reference into storage, changes are persisted
+
+--------------------------------------------------------------------------------
+Note 8 - Mappings
+--------------------------------------------------------------------------------
+Mapping is the workhorse data type:
+
+    mapping(address => uint) public balances;
+
+Lookup is a constant-time hash, no iteration. The cost is that you cannot list
+the keys: a mapping has no length. If you need to iterate, keep a parallel
+array of keys.
+
+Nested mappings are also a thing:
+
+    mapping(address => mapping(address => bool)) public friends;
+
+Use mappings first, fall back to arrays only when iteration matters.
+
+--------------------------------------------------------------------------------
+Note 9 - Voting Contract
+--------------------------------------------------------------------------------
+The voting project ties everything together. The contract holds a list of
+proposals, each with a target address and calldata to execute. Members can
+create proposals and cast yes/no votes. After 10 yes votes the proposal
+auto-executes its calldata via a low-level `target.call(data)`.
+
+Patterns reused inside Voting:
+  - enum Vote { NOT_CAST, YES, NO } so we can detect a re-vote
+  - mapping(uint => mapping(address => Vote)) for per-proposal vote tracking
+  - members are seeded in the constructor with `address[] memory _members`
+  - `executionState[id]` ensures a proposal is executed at most once
+  - events: ProposalCreated(id) and VoteCast(id, voter)
+
+--------------------------------------------------------------------------------
+Note 10 - Inheritance
+--------------------------------------------------------------------------------
+Like other OO languages, contracts can inherit from each other. A child
+contract gets the parent's state variables, modifiers, and functions.
+
+Things I want to remember:
+  - Use `is Parent` to inherit
+  - To pass arguments to the parent constructor: `is Parent(arg)`
+  - `virtual` on the parent + `override` on the child to redefine a function
+  - `super.fn()` calls the parent version on top of the child version
+  - `abstract contract` cannot be deployed directly and may have unimplemented
+     functions
+  - Multiple inheritance works, but keep the order consistent with the
+     C3 linearization (most base first)
+
+Reusable building block I'll keep using outside this course:
+
+    contract Ownable {
+        address public owner;
+        error Forbidden();
+        constructor() { owner = msg.sender; }
+        modifier onlyOwner {
+            if (msg.sender != owner) revert Forbidden();
+            _;
+        }
+    }
+
+================================================================================
+End of notes.
+================================================================================
