@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Contract {
+    mapping(address => bool) public members;
+
+    function addMember(address member) external {
+        members[member] = true;
+    }
+
+    function removeMember(address member) external {
+        members[member] = false;
+    }
+
+    function isMember(address addr) external view returns (bool) {
+        return members[addr];
+    }
+}
