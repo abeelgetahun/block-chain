@@ -12,7 +12,7 @@ The team completed the **Alchemy University – Learn Solidity** track and organ
 - ✅ Progress/completion screenshots included.
 - ✅ Resources organized into clearly separated folders.
 
-## Course reference
+## Course links
 
 - Alchemy University: <https://www.alchemy.com/university/courses/solidity>
 - Alternative accepted by assignment: <https://updraft.cyfrin.io/courses/solidity>
