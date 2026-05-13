@@ -19,6 +19,8 @@ The team completed the **Alchemy University – Learn Solidity** track and organ
 
 ## Team contributions
 
+Folder names below are the original student submission folder names and are intentionally kept unchanged for contribution traceability.
+
 | Member | Student ID | Folder | Main deliverables |
 | --- | --- | --- | --- |
 | Abel Getahun | UGR/30057/15 | [solidity-alchemy__Abel-Getahun_UGR-30057-15](./solidity-alchemy__Abel-Getahun_UGR-30057-15/) | Full chapter solutions, Foundry test files, completion screenshots |
