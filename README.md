@@ -20,7 +20,7 @@ The team completed the **Alchemy University – Learn Solidity** track and organ
 ## Team contributions
 
 | Member | Student ID | Folder | Main deliverables |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Abel Getahun | UGR/30057/15 | [solidity-alchemy__Abel-Getahun_UGR-30057-15](./solidity-alchemy__Abel-Getahun_UGR-30057-15/) | Full chapter solutions, Foundry test files, completion screenshots |
 | Abreham Kifle | UGR/30101/15 | [Abreham Kifle UGR-30101-15](./Abreham%20Kifle%20UGR-30101-15/) | Chapter solutions, notes, screenshots, structured README |
 | Aklilu Desalegn | UGR/30121/15 | [Solidity-Project---Aklilu Desalegn Ugr-30121-15](./Solidity-Project---Aklilu%20Desalegn%20Ugr-30121-15/) | Part-based Solidity solutions, notes, screenshots |
