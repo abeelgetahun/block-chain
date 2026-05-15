@@ -1,6 +1,6 @@
 # Blockchain Group Project Portfolio (Solidity)
 
-This repository is the official submission for the **Laboratory Assignment: Group Project (5 members)**.
+This repository is the official submission for the **Laboratory Assignment: Group Project (6 members)**.
 
 The team completed the **Alchemy University – Learn Solidity** track and organized all course deliverables in member-specific folders.
 
